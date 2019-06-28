@@ -2,37 +2,33 @@ const { Blockchain, Transaction } = require('./blockchain');
 const EC = require('elliptic').ec;
 const ec = new EC('secp256k1');
 
-// Your private key goes here
+// Tu clave privada
 const myKey = ec.keyFromPrivate('7c4c45907dec40c91bab3480c39032e90049f1a44f3e18c3e07c23e3273995cf');
 
-// From that we can calculate your public key (which doubles as your wallet address)
+// A partir de eso podemos calcular su clave pública (que se duplica como su dirección de billetera)
 const myWalletAddress = myKey.getPublic('hex');
 
-// Create new instance of Blockchain class
+// Crear nueva instancia de la clase Blockchain
 const ronycoin = new Blockchain();
 
-// Create a transaction & sign it with your key
+// Crea una transacción y firma con la llave
 const tx1 = new Transaction(myWalletAddress, 'address2', 100);
 tx1.signTransaction(myKey);
 ronycoin.addTransaction(tx1);
 
-// Mine block
+// mina bloque
 ronycoin.minePendingTransactions(myWalletAddress);
 
-// Create second transaction
+// Crea una transacción y firma con la llave
 const tx2 = new Transaction(myWalletAddress, 'address1', 50);
 tx2.signTransaction(myKey);
 ronycoin.addTransaction(tx2);
 
-// Mine block
+// mina bloque
 ronycoin.minePendingTransactions(myWalletAddress);
 
 console.log();
 console.log(`Balance of xavier is ${ronycoin.getBalanceOfAddress(myWalletAddress)}`);
 
-// Uncomment this line if you want to test tampering with the chain
-// ronycoin.chain[1].transactions[0].amount = 10;
-
-// Check if the chain is valid
 console.log();
 console.log('Blockchain valid?', ronycoin.isChainValid() ? 'Yes' : 'No');
